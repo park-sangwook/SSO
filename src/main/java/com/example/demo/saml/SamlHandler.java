@@ -40,7 +40,6 @@ public class SamlHandler {
 	}
 
 	public static String parswWebRequest(String samlRequest) {
-		XmlMapper mapper = new XmlMapper();
 		Inflater inflater = new Inflater();
 		try {
 			byte[] urldecodedResult = Base64.getUrlDecoder().decode(samlRequest);

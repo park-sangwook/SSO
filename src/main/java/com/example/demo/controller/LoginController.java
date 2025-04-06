@@ -13,13 +13,14 @@ import jakarta.servlet.http.HttpServletResponse;
 @Controller
 public class LoginController {
 	
-	@GetMapping(value = "/SP/SAMPLE/TestLogin")
+	@GetMapping(value = "/SAMPLE/TestLogin")
 	public String testLogin(SamlRequestParam param) {
+		System.out.println("text : "+param.getSamlRequest());
 		System.out.println("test : "+SamlHandler.parswWebRequest(param.getSamlRequest()));
 		return "TestLogin";
 	}
 	
-	@GetMapping(value = "/SP/SAMPLE/TestSso")
+	@GetMapping(value = "/SAMPLE/TestSso")
 	public String testSso(HttpServletRequest request, HttpServletResponse response) {
 		WebAgent agent = new WebAgent();
 		agent.requestAuthenticate(request,response);

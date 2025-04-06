@@ -9,7 +9,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class HmacSHA512Encyptor {
 	public static String generate(String message) {
 		try {
-			String secretKey = generateSecretKey(); // 비밀 키
+			String secretKey = PropertyEditor.getProperty(SSOParams.SECRETKEY); 
 			Mac mac = Mac.getInstance("HmacSHA512");
 
 			SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(), "HmacSHA512");
@@ -41,7 +41,7 @@ public class HmacSHA512Encyptor {
 	}
 
 	public static void main(String[] args) {
-		System.out.println("key : " + generateSecretKey());
+		System.out.println("key : " + PropertyEditor.getProperty("secretKey"));
 	}
 	/*
 	 * Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION);

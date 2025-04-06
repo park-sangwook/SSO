@@ -11,6 +11,8 @@ import java.util.zip.Deflater;
 import com.example.demo.saml.SamlHandler;
 import com.example.demo.saml.SamlRequestGenerator;
 import com.example.demo.util.HmacSHA512Encyptor;
+import com.example.demo.util.PropertyEditor;
+import com.example.demo.util.SSOParams;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,14 +38,14 @@ public class WebAgent {
 		String logouturl = Base64.getEncoder().encodeToString(SamlHandler.LOGOUT.getBytes());
 		SamlRequestGenerator generator = new SamlRequestGenerator();
 		SamlRequestGenerator.Issuer issuer = new SamlRequestGenerator.Issuer();
-		issuer.setAssertionAddress(request.getRemoteAddr());
+		generator.setACS(request.getRemoteAddr());
 		generator.setIssueInstant(Instant.now().atZone(ZoneId.of("Asia/Seoul")).toString());
-		
+		issuer.setIssuerValue(PropertyEditor.getProperty(SSOParams.SPADDR));
+		generator.setIssuer(issuer);
 		String samlRequest = SamlHandler.generateRequest(generator);
 		
 		
-		
-		builder.append("http://localhost:8080/SP/SAMPLE/TestLogin");
+		builder.append("http://localhost:8081/SP/SAMPLE/TestLogin");
 		builder.append("?loginurl="+loginurl);
 		builder.append("&logouturl="+logouturl);
 		builder.append("&samlRequest="+samlRequest);

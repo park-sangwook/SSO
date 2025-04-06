@@ -19,11 +19,16 @@ public class SamlRequestGenerator {
 	
 	@JacksonXmlProperty(localName = "ProtocolBinding",isAttribute = true)
 	private String protocolBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect-Deflate";
+
+	@JacksonXmlProperty(localName = "AssertionConsumerServiceURL",isAttribute = true)
+	private String ACS;
 	
 	@Data
 	public static class Issuer{		
 		@JacksonXmlProperty(localName = "xmlns:saml2",isAttribute = true)
 		private String assertionAddress = "urn:oasis:names:tc:SAML:2.0:assertion";
+		@JacksonXmlProperty(localName = "saml2:Issuer")
+        private String issuerValue = "{NAVER WORKS에 등록한 SP Issuer}";
 	}
 	@JacksonXmlProperty(localName = "saml2:issuer")
 	private Issuer issuer = new Issuer();
