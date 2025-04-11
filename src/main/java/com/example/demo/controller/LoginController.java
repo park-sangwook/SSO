@@ -1,13 +1,17 @@
 package com.example.demo.controller;
 
+import java.io.IOException;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.demo.dto.LoginParam;
+import com.example.demo.dto.SamlResponseParam;
 import com.example.demo.saml.SamlRequestParam;
 import com.example.demo.service.HazelCastClientService;
 import com.example.demo.service.SamlResponseService;
@@ -28,9 +32,16 @@ public class LoginController {
 	private final SamlResponseService samlResponseService;
 	private final SamlDecompressor samlDecompressor;
 	@GetMapping(value = "/SAMPLE/TestLogin")
-	public String testLogin(SamlRequestParam param,Model model) {
+	public String testLogin(SamlRequestParam param,Model model,HttpServletResponse response) {
 		model.addAttribute("data",param);
 		model.addAttribute("addr",PropertyEditor.getProperty(SSOParams.Config.SERVERADDR));
+		WebAgent agent = new WebAgent();
+			try {
+				if(!agent.parseWebRequest(param)) response.sendRedirect("https://localhost:8444/SP/error");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		return "TestLogin";
 	}
 	
@@ -48,11 +59,11 @@ public class LoginController {
 	}
 	
 	@PostMapping(value = "/authorization/sso")
-	public String authorizationSSO(LoginParam loginParam,SamlRequestParam samlRequestParam,HttpServletRequest request,Model model) {
+	public String authorizationSSO(LoginParam loginParam,SamlResponseParam samlResponseParam, HttpServletRequest request,Model model) {
 		HttpSession session = request.getSession();
 		session.setAttribute("IDP_ID", hazelCastClientService.getUserIdpMapping("asdf"));
-		samlResponseService.authenticated(request);
-		model.addAttribute("target",samlDecompressor.getBase64ToString(samlRequestParam.getRelayState()));
+		samlResponseService.authenticated(samlResponseParam, request);
+		model.addAttribute("target",samlDecompressor.getBase64ToString(samlResponseParam.getRelayState()));
 		return "response";
 	}
 	@PostMapping(value = "/trans")

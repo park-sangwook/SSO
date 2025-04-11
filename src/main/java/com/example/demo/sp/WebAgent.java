@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import com.example.demo.saml.SamlHandler;
 import com.example.demo.saml.SamlRequestGenerator;
+import com.example.demo.saml.SamlRequestParam;
 import com.example.demo.util.HmacSHA512Encyptor;
 import com.example.demo.util.PropertyEditor;
 import com.example.demo.util.SSOParams;
@@ -32,7 +33,7 @@ public class WebAgent {
 		}
 	}
 	
-	public static String generatorUrl(HttpServletRequest request) {
+	public String generatorUrl(HttpServletRequest request) {
 		StringBuilder builder = new StringBuilder();
 		String loginurl = Base64.getEncoder().encodeToString(SamlHandler.LOGIN.getBytes());
 		String logouturl = Base64.getEncoder().encodeToString(SamlHandler.LOGOUT.getBytes());
@@ -54,4 +55,16 @@ public class WebAgent {
 		
 	}
 	
+	public boolean parseWebRequest(SamlRequestParam samlRequestParam) {
+		if(Objects.isNull(samlRequestParam.getSamlRequest()) || Objects.isNull(samlRequestParam.getSignature())
+				|| Objects.isNull(samlRequestParam.getLoginurl()) || Objects.isNull(samlRequestParam.getLogouturl()))return false;
+		String testSignature = HmacSHA512Encyptor.generateToString(samlRequestParam.getLoginurl(),samlRequestParam.getLogouturl(),
+				samlRequestParam.getSamlRequest(),samlRequestParam.getRelayState());
+		if(!testSignature.equals(samlRequestParam.getSignature())) {
+			System.out.println("signature : "+samlRequestParam.getSignature());
+			System.out.println("test : "+testSignature);
+			return false;
+		}
+		return true;
+	}
 }

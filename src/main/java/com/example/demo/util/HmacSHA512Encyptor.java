@@ -9,6 +9,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class HmacSHA512Encyptor {
 	public static String generate(String message) {
 		try {
+			message = message.replace("%3D", "=");
 			String secretKey = PropertyEditor.getProperty(SSOParams.Config.SECRETKEY); 
 			Mac mac = Mac.getInstance("HmacSHA512");
 
@@ -18,8 +19,7 @@ public class HmacSHA512Encyptor {
 
 			byte[] hmacSha512 = mac.doFinal(message.getBytes());
 
-			String encodedResult = Base64.getEncoder().encodeToString(hmacSha512);
-
+			String encodedResult = Base64.getUrlEncoder().encodeToString(hmacSha512);
 			return encodedResult;
 		} catch (Exception e) {
 			e.printStackTrace();

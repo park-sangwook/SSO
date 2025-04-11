@@ -15,15 +15,6 @@ public class SamlDecompressor {
 	public String decryptSamlRequest(String samlRequest) {
 		Inflater inflater = new Inflater();
 		try {
-//			String base64UrlString = samlRequest;
-//
-//			// URL-safe Base64는 padding(`=`)이 제거될 수 있음. 길이에 맞게 추가
-//			int padding = (4 - (base64UrlString.length() % 4)) % 4;
-//			for (int i = 0; i < padding; i++) {
-//			    base64UrlString += "=";
-//			}
-//
-//			// 디코딩
 			String urldecodedResult = URLDecoder.decode(samlRequest,StandardCharsets.UTF_8);
 			System.out.println("result : "+urldecodedResult);
 			byte[] decodedSamlRequest = Base64.getUrlDecoder().decode(urldecodedResult);
