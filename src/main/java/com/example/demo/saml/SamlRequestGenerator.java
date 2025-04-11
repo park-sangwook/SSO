@@ -1,47 +1,60 @@
 package com.example.demo.saml;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import java.util.UUID;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 
 import lombok.Data;
 
-@JacksonXmlRootElement(localName = "saml2p:AuthnRequest")
+@XmlRootElement(name = "AuthnRequest", namespace = SamlRequestGenerator.SAML2_PROTOCOL)
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"issuer", "nameIDPolicy"}) // 순서 보장
 @Data
 public class SamlRequestGenerator {
-	@JacksonXmlProperty(localName = "xmlns:saml2p",isAttribute = true)
-	private String samlVersion = "urn:oasis:names:tc:SAML:2.0:protocol";
-	
-	@JacksonXmlProperty(localName = "id",isAttribute = true)
-	private String id = "1";
-	
-	@JacksonXmlProperty(localName = "IssueInstant",isAttribute = true)
-	private String issueInstant = "now";
-	
-	@JacksonXmlProperty(localName = "ProtocolBinding",isAttribute = true)
-	private String protocolBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect-Deflate";
 
-	@JacksonXmlProperty(localName = "AssertionConsumerServiceURL",isAttribute = true)
-	private String ACS;
-	
-	@Data
-	public static class Issuer{		
-		@JacksonXmlProperty(localName = "xmlns:saml2",isAttribute = true)
-		private String assertionAddress = "urn:oasis:names:tc:SAML:2.0:assertion";
-		@JacksonXmlProperty(localName = "saml2:Issuer")
-        private String issuerValue = "{NAVER WORKS에 등록한 SP Issuer}";
-	}
-	@JacksonXmlProperty(localName = "saml2:issuer")
-	private Issuer issuer = new Issuer();
+    public static final String SAML2_PROTOCOL = "urn:oasis:names:tc:SAML:2.0:protocol";
+    public static final String SAML2_ASSERTION = "urn:oasis:names:tc:SAML:2.0:assertion";
 
-	@JacksonXmlProperty(localName = "saml2p:NameIDPolicy")
-	private PolicyFormat policyFormat = new PolicyFormat();
-	
-	@Data
-	@JacksonXmlRootElement
-	public static class PolicyFormat{
-		@JacksonXmlProperty(localName = "Format",isAttribute = true)
-		private String policyFormat="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";		
-	}
-	
-	
+    @XmlAttribute(name = "AssertionConsumerServiceURL")
+    private String assertionConsumerServiceURL;
+
+    @XmlAttribute(name = "ID")
+    private String id = UUID.randomUUID().toString();
+
+    @XmlAttribute(name = "IssueInstant")
+    private String issueInstant;
+
+    @XmlAttribute(name = "ProtocolBinding")
+    private String protocolBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect-Deflate";
+
+    @XmlAttribute(name = "ProviderName")
+    private String providerName = "SAMPLE_SYSTEM";
+
+    @XmlAttribute(name = "Version")
+    private String version = "2.0";
+
+    @XmlElement(name = "Issuer", namespace = SAML2_ASSERTION)
+    private Issuer issuer = new Issuer();
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    @Data
+    public static class Issuer {
+        @XmlValue
+        private String spIssuer;
+    }
+
+    @XmlElement(name = "NameIDPolicy", namespace = SAML2_PROTOCOL)
+    private NameIDPolicy nameIDPolicy = new NameIDPolicy();
+
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class NameIDPolicy {
+        @XmlAttribute(name = "Format")
+        private String format = "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
+    }
 }

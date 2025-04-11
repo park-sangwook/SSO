@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Document</title>
+<script
+	src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+</head>
+<body>
+	<form th:action="@{|${target}|}" method="post" id="form"></form>
+	<script>
+	$(function(){
+		$("#form").submit();
+	})
+	</script>
+</body>
+</html>
