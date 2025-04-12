@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -66,6 +65,14 @@ public class LoginController {
 		model.addAttribute("target",samlDecompressor.getBase64ToString(samlResponseParam.getRelayState()));
 		return "response";
 	}
+	
+	@GetMapping(value = "/signup")
+	public String signup(Model model) {
+		model.addAttribute("target",PropertyEditor.getProperty(SSOParams.Config.SERVERADDR)+"/signupOk");
+		return "signup";
+	}
+	
+	// TODO : 현재 request는 unmashalling이 되는데 response가 안되는 상태
 	@PostMapping(value = "/trans")
 	public ResponseEntity<?> transData(@RequestBody String data){
 		return ResponseEntity.ok(samlDecompressor.decryptSamlRequest(data));
