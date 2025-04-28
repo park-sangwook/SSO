@@ -47,3 +47,6 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+configurations.all {
+    exclude group: 'jakarta.xml.bind'
+}

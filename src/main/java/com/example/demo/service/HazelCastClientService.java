@@ -9,8 +9,9 @@ import com.hazelcast.multimap.MultiMap;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
 
-
+@Slf4j
 @Service
 public class HazelCastClientService {
 	private HazelcastInstance hazelcastClientInstance;
@@ -25,18 +26,20 @@ public class HazelCastClientService {
 		return user.stream().findAny().get();
 	}
 	public Collection<String> getUserIdpMapping(){
-		System.out.println("keySet : "+userIdpMapping.keySet());
-		System.out.println("entrySet : "+userIdpMapping.entrySet());
-		System.out.println("userIdpMapping : "+userIdpMapping);
 		return userIdpMapping.keySet();
+	}
+	
+	public void removeUserIdpMapping(String userId) {
+		Collection<String> user = userIdpMapping.get(userId);
+		userIdpMapping.remove(user);
 	}
 	@PostConstruct
 	public void init() {
 		// 초기화 시점에 실행될 로직
 		if (hazelcastClientInstance != null) {
-			System.out.println("Hazelcast Client Initialized");
+			log.info("Hazelcast Client Initialized");
 		} else {
-			System.out.println("Hazelcast Client Failed to Initialize");
+			log.info("Hazelcast Client Failed to Initialize");
 		}
 	}
 
@@ -44,7 +47,7 @@ public class HazelCastClientService {
 	public void cleanup() {
 		// 종료 시점에 실행될 로직
 		if (hazelcastClientInstance != null) {
-			System.out.println("Shutting down Hazelcast Client...");
+			log.info("Shutting down Hazelcast Client...");
 			hazelcastClientInstance.shutdown(); // 클라이언트 종료
 		}
 	}

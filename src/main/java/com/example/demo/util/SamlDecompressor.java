@@ -16,7 +16,6 @@ public class SamlDecompressor {
 		Inflater inflater = new Inflater();
 		try {
 			String urldecodedResult = URLDecoder.decode(samlRequest,StandardCharsets.UTF_8);
-			System.out.println("result : "+urldecodedResult);
 			byte[] decodedSamlRequest = Base64.getUrlDecoder().decode(urldecodedResult);
 			inflater.setInput(decodedSamlRequest);
 			

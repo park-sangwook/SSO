@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Objects;
 
+import com.example.demo.dto.OAuthParam;
 import com.example.demo.saml.SamlHandler;
 import com.example.demo.saml.SamlRequestGenerator;
 import com.example.demo.saml.SamlRequestParam;
@@ -16,13 +17,12 @@ import com.example.demo.util.SSOParams;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 public class WebAgent {
 	
 	public void requestAuthenticate(HttpServletRequest request,HttpServletResponse response) {
 		HttpSession session = request.getSession();
-		System.out.println("SP : "+session.getAttribute("SP"));
-		System.out.println("IDP_ID : "+session.getAttribute("IDP_ID"));
 		if(Objects.isNull(session.getAttribute("IDP_ID")) && Objects.isNull(session.getAttribute("SP"))) {
 			try {
 				response.sendRedirect(generatorUrl(request));
@@ -61,8 +61,19 @@ public class WebAgent {
 		String testSignature = HmacSHA512Encyptor.generateToString(samlRequestParam.getLoginurl(),samlRequestParam.getLogouturl(),
 				samlRequestParam.getSamlRequest(),samlRequestParam.getRelayState());
 		if(!testSignature.equals(samlRequestParam.getSignature())) {
-			System.out.println("signature : "+samlRequestParam.getSignature());
-			System.out.println("test : "+testSignature);
+			log.debug("Violation of SamlRequest Integrity");
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean parseOAuthCheck(OAuthParam param) {
+		if(Objects.isNull(param.getClient_id()) || Objects.isNull(param.getRedirect_uri()) || Objects.isNull(param.getState())) {
+			log.info("Required OAuth param is absent");
+			return false;
+		}
+		if(!param.getResponse_type().equals("code")) {
+			log.info("response_type is not code");
 			return false;
 		}
 		return true;

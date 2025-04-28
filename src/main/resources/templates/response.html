@@ -3,15 +3,20 @@
 <head>
 <meta charset="UTF-8" />
 <title>Document</title>
-<script type="text/javascript" src="/SP/js/response.js"></script>
 <script	src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
 </head>
 <body>
-	<form th:action="@{|${target}|}" method="post" id="form"></form>
-	<script>
-	$(function(){
-		$("#form").submit();
-	})
+	<form th:action="@{|${target}|}" th:method="${method}" id="form">
+		<th:block th:if="${data != null}">
+			<th:block th:if="${data.data != null}" th:each="entry : ${data.data}">
+				<input type="hidden" th:name="${entry.key}" th:value="${entry.value}"/>
+			</th:block>
+		</th:block>
+	</form>
+	<script th:inline="javascript">
+		$(function(){
+			$("#form").submit();
+		})
 	</script>
 </body>
 </html>

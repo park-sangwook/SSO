@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.ofg">
+<head>
+	<meta charset="UTF-8" />
+	<title>OAuth Login</title>
+</head>
+<body>
+	<form th:action="@{|${target}|}">
+		<input type="text" name="id" placeholder="id"/>
+		<input type="password" name="password" id="" placeholder="password"/>
+		<input type="hidden" name="state" th:value="${data.state}"/>
+		<input type="hidden" name="scope" th:value="${data.scope}"/>
+	</form>
+</body>
+</html>

@@ -1,5 +1,6 @@
 $(function() {
 	transformRequestClick();
+	testLogout();
 })
 
 function transformRequestClick() {
@@ -20,5 +21,21 @@ function transformRequestClick() {
 		})
 
 
+	})
+}
+
+function testLogout(){
+	$("#logout").on("click",function(){
+		$.ajax({
+		type: "post",
+		url : "/SP/logout",
+		dataType: "json" , 
+		success: function(result){
+			location.href=result.idp+"?slo="+result.slo+"&signature="+result.signature;
+		},
+		error:function(error){  
+			console.log(error);
+		}
+	})
 	})
 }

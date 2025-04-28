@@ -3,6 +3,7 @@ package com.example.demo.saml;
 import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -54,8 +55,8 @@ public class SamlHandler {
 	public static String parswWebRequest(String samlRequest) {
 		Inflater inflater = new Inflater();
 		try {
-			byte[] urldecodedResult = Base64.getUrlDecoder().decode(samlRequest);
-			byte[] decodedSamlRequest = Base64.getDecoder().decode(urldecodedResult);
+			String urldecodedResult = URLDecoder.decode(samlRequest,StandardCharsets.UTF_8);
+			byte[] decodedSamlRequest = Base64.getUrlDecoder().decode(urldecodedResult);
 			inflater.setInput(decodedSamlRequest);
 			
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream(decodedSamlRequest.length);

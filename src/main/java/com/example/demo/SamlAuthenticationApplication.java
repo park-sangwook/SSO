@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SamlAuthenticationApplication{
 
 	public static void main(String[] args) {
+		System.setProperty("javax.xml.bind.context.factory", "com.sun.xml.bind.v2.ContextFactory");
 		SpringApplication.run(SamlAuthenticationApplication.class, args);
 	}
 
